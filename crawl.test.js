@@ -1,4 +1,4 @@
-import { normalizeURL } from "./crawl.js";
+import { normalizeURL, ggetURLsFromHTML } from "./crawl.js";
 import { test, expect } from "@jest/globals";
 
 test("normalizeURL protocol", () => {
@@ -35,3 +35,8 @@ test("normalizeURL random caps", () => {
   const expected = "blog.boot.dev/path";
   expect(actual).toEqual(expected);
 });
+
+test("getURLsFromHTML absolute path", () => {
+  const inputURL = 'https://blog.boot.dev';
+  const inputHTML = 
+}) 
