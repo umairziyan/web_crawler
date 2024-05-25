@@ -32,4 +32,26 @@ function getURLsFromHTML(html, baseURL) {
 
   return urls;
 }
-export { normalizeURL, getURLsFromHTML };
+
+async function crawlPage(currentURL) {
+  let response;
+  try {
+    response = await fetch(currentURL);
+  } catch (err) {
+    console.log(`an eror was thrown: ${err}`);
+  }
+
+  if (response.status > 399) {
+    console.log(`Got HTTP error: ${response.status} ${response.statusText}`);
+    return;
+  }
+  const contentType = response.headers.get("content-type");
+  if (!contentType || !contentType.includes("text/html")) {
+    console.log("Got non-HTML response: ${contentType}");
+    return;
+  }
+
+  console.log(await response.text());
+}
+
+export { normalizeURL, getURLsFromHTML, crawlPage };

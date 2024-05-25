@@ -36,7 +36,7 @@ test("normalizeURL random caps", () => {
   expect(actual).toEqual(expected);
 });
 
-test("getURLsFromHTML absolute path", () => {
-  const inputURL = 'https://blog.boot.dev';
-  const inputHTML = 
-}) 
+// test("getURLsFromHTML absolute path", () => {
+//   const inputURL = 'https://blog.boot.dev';
+//   const inputHTML =
+// })
