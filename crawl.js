@@ -33,10 +33,49 @@ function getURLsFromHTML(html, baseURL) {
   return urls;
 }
 
-async function crawlPage(currentURL) {
+async function crawlPage(baseURL, currentURL = baseURL, pages = {}) {
+  // Ensure that currentURL is in the same domain as baseURL
+  const baseURLobj = new URL(baseURL);
+  const currentURLobj = new URL(currentURL);
+
+  if (currentURLobj.hostname !== baseURLobj.hostname) {
+    return pages;
+  }
+
+  // Normalize the URL
+  const currentURLNorm = normalizeURL(currentURL);
+
+  // Check if normalized url is in the pages
+  if (pages[currentURLNorm] > 0) {
+    pages[currentURLNorm]++;
+    return pages;
+  }
+
+  // Initialise page in array
+  pages[currentURLNorm] = 1;
+
+  // Parse the html
+  let html = "";
+  try {
+    html = await parseHTLML(currentURL);
+  } catch (err) {
+    console.log("${err.message}");
+    return pages;
+  }
+
+  // Get the links within the page and use recursion with the current function.
+  const nextURLs = getURLsFromHTML(html, baseURL);
+  for (const nextURL of nextURLs) {
+    pages = await crawlPage(baseURL, nextURL, pages);
+  }
+
+  return pages;
+}
+
+async function parseHTLML(inputURL) {
   let response;
   try {
-    response = await fetch(currentURL);
+    response = await fetch(inputURL);
   } catch (err) {
     console.log(`an eror was thrown: ${err}`);
   }
@@ -51,7 +90,6 @@ async function crawlPage(currentURL) {
     return;
   }
 
-  console.log(await response.text());
+  return response.text();
 }
-
 export { normalizeURL, getURLsFromHTML, crawlPage };
